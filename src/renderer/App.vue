@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="layout-copy">
-                    2017-2018 &copy; HuaYu-Soft
+                    2017-2018 &copy; Deboy
                 </div>
             </i-col>
         </Row>
