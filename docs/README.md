@@ -17,13 +17,26 @@
 
 ![导出配置](images/screen/export.png)
 
+## 如何新增 语言/框架 支持
+1. `fork` 项目  
+2. 下载到本地 到 `/src/renderer/config/default-row` 目录下拷贝一份非`index.js`的文件  
+3. 重命名为你的框架的名字 后缀必须是.js 放到同级目录
+4. 提交 然后 创建 `pull request`
 
-## 模版编写规范
+## 模版编写规范(导出才用到的)
+> 晚些放上 `demo`
+
 模版引擎采用了 [`handlebars`](http://handlebarsjs.com/)   
 我深知我个人是无法了解多种语言/框架的编写规范和所需要的重复劳动, 因此, 我需要你的帮助!  
 你们对自己常用开发框架有足够多的时间去深入了解, 因此, 你比我更适合为你所熟悉的语言/框架编写一个规范的配置.    
-
-### 编写步骤
+请提交模版到 `template` 目录中
+命名规范
+```bash
+└─ Offical [username]
+    └─ Java [language]
+        └─ SpringBoot [Framework Name or Native]
+```
+然后 `pull request`
 
 ### 模版帮助函数(helper)
 > 在软件中也可以看到 并且是最新的

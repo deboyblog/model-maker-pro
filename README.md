@@ -19,20 +19,6 @@
 
 ![导出配置](docs/images/screen/export.png)
 
-
-## 模版编写规范
-模版引擎采用了 [`handlebars`](http://handlebarsjs.com/)   
-我深知我个人是无法了解多种语言/框架的编写规范和所需要的重复劳动, 因此, 我需要你的帮助!  
-你们对自己常用开发框架有足够多的时间去深入了解, 因此, 你比我更适合为你所熟悉的语言/框架编写一个规范的配置.    
-
-### 编写步骤
-
-### 模版帮助函数(helper)
-> 在软件中也可以看到 并且是最新的
-
-- [assemble](http://assemble.io/helpers)
-- [Handlebars辅助函数集](https://github.com/NEYouFan/nei-toolkit/blob/master/doc/Handlebars%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0%E9%9B%86.md)
-
 ## Build Setup
 ``` bash
 # clone this rep
@@ -109,3 +95,5 @@ A: 经过我司实践 已经生成了一个项目
 A: 完全不需要
 ## License
 [MIT](https://en.wikipedia.org/wiki/MIT_License)
+
+## [Document](https://deboyblog.github.io/model-maker-pro/#/)
