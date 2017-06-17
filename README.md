@@ -1,4 +1,5 @@
 ## [Document](https://deboyblog.github.io/model-maker-pro/#/)
+
 ## 软件介绍
 `ModelMakerPro` 一款以设计软件表结构为核心 通过与模版结合 生成各种文件的工具     
 模版可以是`Java`项目的  
@@ -8,7 +9,15 @@
 如果希望支持其他项目模版 可以参考 一个标准模版的[编写示范](https://github.com/deboyblog/model-maker-pro/blob/master/src/renderer/config/default-row/springboot.js)提交你们的模版 
 等待你们发掘
 
+## 开发技术栈: 
+- [Vue.js](https://cn.vuejs.org/) 
+- 以及了解 [electron](https://electron.atom.io/docs/) API 调用 就这么简单
+- 使用到的UI库: [iview](https://www.iviewui.com/)
 
+## 截图
+![首页](docs/images/screen/index.png)
+
+![导出配置](docs/images/screen/export.png)
 
 
 ## 模版编写规范

@@ -1,7 +1,7 @@
 {
   "name": "model-maker-pro",
   "version": "0.2.67",
-  "description": "模型生成器 以模型为核心已模版为扩展一键生成API、SQL、CMS后台等 功能无限 等你挖掘!",
+  "description": "项目模型 + 各种模版 = 完整RESTful接口",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && build",
