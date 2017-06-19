@@ -1,6 +1,7 @@
 <template>
     <div class="header">
         <Button type="primary" @click="showModal = true">新增项目</Button>
+        <Button type="primary" @click="showImportFromSQLModal = true">从SQL导入</Button>
         <Button type="error" v-show="projectIndex!==null && projectIndex!==''" @click="showDeleteConfirm = true">
             删除当前项目
         </Button>
@@ -35,7 +36,50 @@
                 <FormItem prop="type" label="项目类型">
                     <Select v-model="project.type" placeholder="请选择项目类型" style="width: 100%">
                         <template v-for="type in projectTypes">
-                            <Option :value="type" >{{type}}</Option>
+                            <Option :value="type">{{type}}</Option>
+                        </template>
+                    </Select>
+                </FormItem>
+            </Form>
+        </Modal>
+        <!--从数据库中导入项目-->
+        <Modal v-model="showImportFromSQLModal" title="请输入项目名称" @on-ok="confirmAdd"
+               @on-cancel="()=>{showImportFromSQLModal = false}">
+            <Form ref="formInline" :model="database" :rules="databaseRule">
+                <Form-item prop="address" label="IP地址">
+                    <Input type="text" v-model="database.address" placeholder="请输入数据库链接IP地址">
+                    </Input>
+                </Form-item>
+                <Form-item prop="port" label="端口">
+                    <Input type="text" v-model="database.port" placeholder="请输入数据库链接端口">
+                    </Input>
+                </Form-item>
+                <Form-item prop="name" label="数据库名">
+                    <Input type="text" v-model="database.name" placeholder="请输入数据库链接名">
+                    </Input>
+                </Form-item>
+                <Form-item prop="username" label="用户名">
+                    <Input type="text" v-model="database.username" placeholder="请输入数据库链接密码">
+                    </Input>
+                </Form-item>
+                <Form-item prop="password" label="密码">
+                    <Input type="text" v-model="database.password" placeholder="请输入数据库链接密码">
+                    </Input>
+                </Form-item>
+                <FormItem prop="type" label="数据库类型">
+                    <Select v-model="database.type" placeholder="请选择项目类型" style="width: 100%">
+                        <template v-for="sqlType in sqlTypeOptions">
+                            <Option :value="sqlType">{{sqlType}}</Option>
+                        </template>
+                    </Select>
+                </FormItem>
+                <div style="text-align: right;width: 100%">
+                    <Button @click="testSQL" type="primary">测试连接</Button>
+                </div>
+                <FormItem prop="type" label="项目类型">
+                    <Select v-model="project.type" placeholder="请选择项目类型" style="width: 100%">
+                        <template v-for="type in projectTypes">
+                            <Option :value="type">{{type}}</Option>
                         </template>
                     </Select>
                 </FormItem>
@@ -75,23 +119,50 @@
     }
 </style>
 <script type="text/ecmascript-6">
-  import { mapGetters, mapActions } from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
   import * as types from '../../vuex/mutation-types'
   const defaultRows = require('@/config/default-row').default
+  import Sequelize from 'sequelize'
   export default{
     data () {
       return {
         showModal: false,
+        showImportFromSQLModal: true,
+        sequelize: null,
+        database: {
+          type: 'mysql',
+          address: 'localhost',
+          port: '3306',
+          name: 'mysql',
+          username: 'root',
+          password: ''
+        },
+        sqlTypeOptions: [
+          'mysql',
+          'postgres',
+          'mssql'
+        ],
         project: {
           name: '',
           type: 'laravel'
         },
         projectRule: {
           name: [
-            { required: true, message: '请填写项目名', trigger: 'blur' }
+            {required: true, message: '请填写项目名', trigger: 'blur'}
           ],
           type: [
-            { required: true, message: '请选择项目类型', trigger: 'change' }
+            {required: true, message: '请选择项目类型', trigger: 'change'}
+          ]
+        },
+        databaseRule: {
+          address: [
+            {required: true, message: '请填写数据库链接地址', trigger: 'blur'}
+          ],
+          port: [
+            {required: true, message: '请填写数据库链接地址', trigger: 'blur'}
+          ],
+          name: [
+            {required: true, message: '请填写数据库链接地址', trigger: 'blur'}
           ]
         },
         showDeleteConfirm: false,
@@ -109,7 +180,25 @@
       ...mapGetters(['projectIndex'])
     },
     methods: {
+      showAllTables () {
+        this.sequelize.queryInterface && this.sequelize.queryInterface.showAllTables().then(tableName => {
+          console.log(tableName)
+        })
+      },
       ...mapActions(['showNotice']),
+      testSQL () {
+        let _database = this.database
+        this.sequelize = new Sequelize(`${_database.type}://${_database.username}:${_database.password}@${_database.address}:${_database.port}/${_database.name}`)
+        this.sequelize
+          .authenticate()
+          .then(() => {
+            console.log('Connection has been established successfully.')
+            this.showAllTables()
+          })
+          .catch(err => {
+            console.error('Unable to connect to the database:', err)
+          })
+      },
       confirmAdd () {
         if (this.project.name && this.project.type) {
           this.$store.commit(types.ADD_PROJECT, this.project)
