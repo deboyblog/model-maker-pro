@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>model-maker-pro</title>
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://platform.linkedin.com ">
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js"></script>
     <% if (htmlWebpackPlugin.options.nodeModules) { %>
-      <!-- Add `node_modules/` to global paths so `require` works properly in development -->
-      <script>
-        require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
-      </script>
+    <!-- Add `node_modules/` to global paths so `require` works properly in development -->
+    <script>
+      require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
+    </script>
     <% } %>
-  </head>
-  <body>
-    <div id="app"></div>
-    <!-- webpack builds are automatically injected -->
-  </body>
+</head>
+<body>
+<div id="app"></div>
+<!-- webpack builds are automatically injected -->
+</body>
 </html>

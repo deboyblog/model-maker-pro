@@ -43,19 +43,19 @@
             </Form>
         </Modal>
         <!--从数据库中导入项目-->
-        <Modal v-model="showImportFromSQLModal" title="请输入项目名称" @on-ok="confirmAdd"
+        <Modal v-model="showImportFromSQLModal" title="请输入项目名称" @on-ok="confirmAdd" :fixd="0"
                @on-cancel="()=>{showImportFromSQLModal = false}">
             <Form ref="formInline" :model="database" :rules="databaseRule">
-                <Form-item prop="address" label="IP地址">
-                    <Input type="text" v-model="database.address" placeholder="请输入数据库链接IP地址">
+                <Form-item prop="host" label="IP地址">
+                    <Input type="text" v-model="database.host" placeholder="请输入数据库链接IP地址">
                     </Input>
                 </Form-item>
                 <Form-item prop="port" label="端口">
                     <Input type="text" v-model="database.port" placeholder="请输入数据库链接端口">
                     </Input>
                 </Form-item>
-                <Form-item prop="name" label="数据库名">
-                    <Input type="text" v-model="database.name" placeholder="请输入数据库链接名">
+                <Form-item prop="dbName" label="数据库名">
+                    <Input type="text" v-model="database.dbName" placeholder="请输入数据库链接名">
                     </Input>
                 </Form-item>
                 <Form-item prop="username" label="用户名">
@@ -76,6 +76,10 @@
                 <div style="text-align: right;width: 100%">
                     <Button @click="testSQL" type="primary">测试连接</Button>
                 </div>
+                <Form-item prop="name" label="项目名称">
+                    <Input type="text" v-model="project.name" placeholder="请输入项目名称">
+                    </Input>
+                </Form-item>
                 <FormItem prop="type" label="项目类型">
                     <Select v-model="project.type" placeholder="请选择项目类型" style="width: 100%">
                         <template v-for="type in projectTypes">
@@ -86,7 +90,7 @@
             </Form>
         </Modal>
         <!--删除项目-->
-        <Modal v-model="showDeleteConfirm" title="请输入项目名称" @on-ok="confirmDelete"
+        <Modal v-model="showDeleteConfirm" title="请确认是否要删除该项目" @on-ok="confirmDelete"
                @on-cancel="()=>{showDeleteConfirm = false}">
             确定删除当前项目 ？ <br>
             <b>操作无法回复 建议先导出项目</b>
@@ -119,21 +123,21 @@
     }
 </style>
 <script type="text/ecmascript-6">
-  import {mapGetters, mapActions} from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import * as types from '../../vuex/mutation-types'
-  const defaultRows = require('@/config/default-row').default
-  import Sequelize from 'sequelize'
+  import defaultRows from '@/config/default-row'
+  import SQLServices from '../../services/SQLServices'
   export default{
     data () {
       return {
         showModal: false,
         showImportFromSQLModal: true,
-        sequelize: null,
+        sqlConnect: null,
         database: {
           type: 'mysql',
-          address: 'localhost',
+          host: 'localhost',
           port: '3306',
-          name: 'mysql',
+          dbName: 'super_sign',
           username: 'root',
           password: ''
         },
@@ -144,7 +148,7 @@
         ],
         project: {
           name: '',
-          type: 'laravel'
+          type: defaultRows[0]
         },
         projectRule: {
           name: [
@@ -155,7 +159,7 @@
           ]
         },
         databaseRule: {
-          address: [
+          host: [
             {required: true, message: '请填写数据库链接地址', trigger: 'blur'}
           ],
           port: [
@@ -180,20 +184,15 @@
       ...mapGetters(['projectIndex'])
     },
     methods: {
-      showAllTables () {
-        this.sequelize.queryInterface && this.sequelize.queryInterface.showAllTables().then(tableName => {
-          console.log(tableName)
-        })
-      },
       ...mapActions(['showNotice']),
       testSQL () {
-        let _database = this.database
-        this.sequelize = new Sequelize(`${_database.type}://${_database.username}:${_database.password}@${_database.address}:${_database.port}/${_database.name}`)
-        this.sequelize
-          .authenticate()
+        this.sqlConnect = new SQLServices(this.datebase)
+        this.sqlConnect.connect.authenticate()
           .then(() => {
             console.log('Connection has been established successfully.')
-            this.showAllTables()
+            this.sqlConnect.dumpAllTables().then(tables => {
+              console.log(tables)
+            })
           })
           .catch(err => {
             console.error('Unable to connect to the database:', err)

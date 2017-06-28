@@ -1,7 +1,6 @@
 'use strict'
 
 import { app, BrowserWindow, Menu } from 'electron'
-console.log(Menu)
 // Install `electron-debug` with `devtron`
 require('electron-debug')({showDevTools: process.env.NODE_ENV === 'development'})
 
