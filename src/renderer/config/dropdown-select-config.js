@@ -2,6 +2,7 @@
  * Created by Deboy on 2017/5/12.
  */
 export default {
+  // 数据库属性设置 只加了常用的 需要可以在这里添加 不建议加太多无用的或者不常见的
   'DB_FIELD_TYPES': [
     {name: '不设置', value: ''},
     {name: 'int', value: 'int'},

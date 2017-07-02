@@ -67,7 +67,7 @@ public class {{upperFirstAndDashToCamel name}} extends IDomain {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	{{/is}}
-	@Column({{#is db.allowEmpty false}}nullable = false, {{/is}}{{#is java.insertable false}}insertable = false, {{/is}}{{#is java.updateable false}}updateable = false, {{/is}}columnDefinition = "{{db.dbType}}{{#isnt db.maxlength null}}({{db.maxlength}}){{/isnt}}{{#isnt db.defaultVal null}} default '{{db.defaultVal}}'{{/isnt}} comment '[{{title}}]{{#isnt filter null}} {{#each filter}}{{@key}}:{{this}} {{/each}}{{/isnt}}'")
+	@Column({{#is db.allowEmpty false}}nullable = false, {{/is}}{{#is java.insertable false}}insertable = false, {{/is}}{{#is java.updateable false}}updateable = false, {{/is}}columnDefinition = "{{db.dbType}}{{#isnt db.maxlength null}}({{db.maxlength}}){{/isnt}}{{#isnt db.defaultVal null}} default '{{db.defaultVal}}'{{/isnt}} comment '[{{title}}]{{#isnt customFilter null}} {{#each customFilter}}{{@key}}:{{this}} {{/each}}{{/isnt}}'")
 	private {{java.type}} {{dashToCamel field}};
 {{/is}}
 {{/each}}
