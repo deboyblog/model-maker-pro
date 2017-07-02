@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="tips">请注意 自动保存功能已去除 切换表编辑之前记得按下 Ctrl+S 保存 否则会丢失数据 返回上一步按下：Ctrl+Z</div>
+        <div class="tips">请注意 自动保存功能已去除 切换表编辑之前记得按下 Ctrl+S 或 Ctrl+Shift+S 保存 否则会丢失数据 返回上一步按下：Ctrl+Z</div>
         <Row type="flex">
             <Col span="18" class="table-area" :style="contentWarpHeight">
             <table>
@@ -79,10 +79,10 @@
                     </td>
                     <td colspan="1">
                         <template v-if="index === onEditIndex">
-                            <Input v-model="item.filter" placeholder="0:保密;1:男;2:女"></Input>
+                            <Input v-model="item.customFilter" placeholder="0:保密;1:男;2:女"></Input>
                         </template>
                         <template v-else>
-                            {{item.filter}}
+                            {{item.customFilter}}
                         </template>
                     </td>
                     <td colspan="1" style="padding: 0 5px;">
@@ -102,52 +102,18 @@
             </table>
             </Col>
             <Col span="6" :style="contentWarpHeight">
-            <template v-if="onEditIndex!==null && onEditRow">
-                <h3 style="padding: 10px;">DB属性
-                    <Icon style="float: right;cursor: pointer;" @click.native="openAddPropsModel('db')" size="20"
-                          type="plus-round"></Icon>
-                </h3>
-                <template v-for="(prop, key) in onEditRow.db">
-                    <multi-type-input v-model="prop.value" :label="prop.name" :type="prop.type"
-                                      :options="prop.optionKey ? options[prop.optionKey] : []"
-                                      @on-remove="removeCustomProps('db', key)"
-                                      :is-custom="prop.isCustom"></multi-type-input>
-                </template>
-                <template v-if="onEditRow.laravel">
-                    <h3 style="padding: 10px">Laravel属性
-                        <Icon style="float: right;cursor: pointer;" @click.native="openAddPropsModel('laravel')"
-                              size="20"
+            <template v-if="onEditIndex!==null && onEditRow && attrs">
+                <template v-for="(attr, attrKey) in attrs">
+                    <h3 style="padding: 10px;">{{attrKey}} 属性
+                        <Icon style="float: right;cursor: pointer;" @click.native="openAddPropsModel(attrKey)" size="20"
                               type="plus-round"></Icon>
                     </h3>
-                    <template v-for="(prop, key) in onEditRow.laravel">
+                    <template v-for="(prop, key) in onEditRow[attrKey]">
                         <multi-type-input v-model="prop.value" :label="prop.name" :type="prop.type"
                                           :options="prop.optionKey ? options[prop.optionKey] : []"
-                                          @on-remove="removeCustomProps('java', key)"
+                                          @on-remove="removeCustomProps(attrKey, key)"
                                           :is-custom="prop.isCustom"></multi-type-input>
                     </template>
-                </template>
-                <template v-if="onEditRow.java">
-                    <h3 style="padding: 10px">Jave属性
-                        <Icon style="float: right;cursor: pointer;" @click.native="openAddPropsModel('java')" size="20"
-                              type="plus-round"></Icon>
-                    </h3>
-                    <template v-for="(prop, key) in onEditRow.java">
-                        <multi-type-input v-model="prop.value" :label="prop.name" :type="prop.type"
-                                          :options="prop.optionKey ? options[prop.optionKey] : []"
-                                          @on-remove="removeCustomProps('java', key)"
-                                          :is-custom="prop.isCustom"></multi-type-input>
-                    </template>
-                </template>
-
-                <h3 style="padding: 10px">Vue属性
-                    <Icon style="float: right;cursor: pointer;" @click.native="openAddPropsModel('vue')" size="20"
-                          type="plus-round"></Icon>
-                </h3>
-                <template v-for="(prop, key) in onEditRow.vue">
-                    <multi-type-input v-model="prop.value" :label="prop.name" :type="prop.type"
-                                      :options="prop.optionKey ? options[prop.optionKey] : []"
-                                      @on-remove="removeCustomProps('vue', key)"
-                                      :is-custom="prop.isCustom"></multi-type-input>
                 </template>
             </template>
             </Col>
@@ -209,7 +175,7 @@
   import MultiTypeInput from 'components/multi-type-input'
   import { clone, moveDown, moveUp, insert } from '../utils/helper'
   import PropsAdd from 'components/props-add'
-  const DropDownOptionKeys = require('../config/dropdown-select-config').default
+  import DropDownOptionKeys from '../config/dropdown-select-config'
   export default{
     components: {
       MultiTypeInput,
@@ -221,6 +187,7 @@
         onEditRow: null,
         onEditIndex: null,
         fields: [],
+        attrs: [],
         propsAdd: {
           show: false,
           title: ''
@@ -272,7 +239,8 @@
     watch: {
       onEditIndex (val) {
         this.$set(this, 'onEditRow', this.fields[val])
-      }
+      },
+      onEditRow: 'updateAttrs'
     },
     computed: {
       tableList () {
@@ -293,6 +261,17 @@
       }
     },
     methods: {
+      updateAttrs (field) {
+        let attrs = {}
+        if (field) {
+          Object.keys(field).forEach(attr => {
+            if (field[attr] instanceof Object) {
+              attrs[attr] = field[attr]
+            }
+          })
+        }
+        this.attrs = attrs
+      },
       watchKeyDown (e) {
         if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey && !e.shiftKey)) {
           e.preventDefault()

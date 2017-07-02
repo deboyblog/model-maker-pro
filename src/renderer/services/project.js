@@ -75,12 +75,9 @@ export function install (Vue) {
     /**
      * 为项目文件做兼容性处理
      */
-    pollyfillPorject (targetProject) {
+    polyfillProject (targetProject) {
       targetProject.tables.forEach((table) => {
-        table.fields.forEach((field, index) => {
-          // 某个字段值的属性合并
-          table.fields[index] = tools.mergeDefaultRow(targetProject.type, JSON.parse(JSON.stringify(field)))
-        })
+        table.fields = tools.mergeDefaultRow(targetProject.type, JSON.parse(JSON.stringify(table.fields)))
       })
       return targetProject
     },
@@ -88,19 +85,14 @@ export function install (Vue) {
       let project = store.getters.projectList[store.getters.projectIndex]
       if (project && project.id) {
         let exportProjectObj = JSON.parse(JSON.stringify(project))
-        exportProjectObj = tools.setRelProjectInfo(exportProjectObj)
+        exportProjectObj = tools.transformProjectInfo(exportProjectObj)
+        console.log(exportProjectObj)
         if (exportType === 'list') {
           return exportProjectObj.tables[index]
         } else {
           delete exportProjectObj.defaultFields
           return exportProjectObj
         }
-        // if (exportType === 'list') {
-        //   return JSON.stringify(exportProjectObj.tables[index], null, 4)
-        // } else {
-        //   delete exportProjectObj.defaultFields
-        //   return JSON.stringify(exportProjectObj, null, 4)
-        // }
       } else {
         return '没有选中项目'
       }
@@ -112,7 +104,7 @@ export function install (Vue) {
       let project = store.getters.projectList[store.getters.projectIndex]
       if (project && project.id) {
         let exportProjectObj = JSON.parse(JSON.stringify(project))
-        exportProjectObj = tools.setRelProjectInfo(exportProjectObj)
+        exportProjectObj = tools.transformProjectInfo(exportProjectObj)
         let template = fs.readFileSync(tplInfo.path).toString()
         try {
           let tpl = Handlebars.compile(template)
@@ -216,8 +208,8 @@ export function install (Vue) {
               count.fail++
             }
             if (project && project.id) {
-              let afterPollyfillProject = this.pollyfillPorject(project)
-              store.commit(types.MERGE_PROJECT_LIST, afterPollyfillProject)
+              let afterPolyfillProject = this.polyfillProject(project)
+              store.commit(types.MERGE_PROJECT_LIST, afterPolyfillProject)
               count.success++
             } else {
               store.dispatch('showNotice', {type: 'warning', title: `${filename}文件导入失败`, desc: '不是标准的项目文件！请检查后重试'})

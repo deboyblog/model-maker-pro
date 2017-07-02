@@ -13,7 +13,7 @@ export default {
   // 关联表列表地址
   selectUrl: null,
   displayField: null,
-  filter: null,
+  customFilter: null,
   db: {
     isDbField: {
       type: 'boolean',

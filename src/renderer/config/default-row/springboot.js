@@ -13,7 +13,7 @@ export default {
   // 关联表列表地址
   selectUrl: null,
   displayField: null,
-  filter: null,
+  customFilter: null,
   db: {
     isDbField: {
       type: 'boolean',
@@ -52,7 +52,7 @@ export default {
       value: null
     }
   },
-  java: {
+  springBoot: {
     transient: {
       type: 'boolean',
       name: '非数据库字段',

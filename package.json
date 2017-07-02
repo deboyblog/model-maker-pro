@@ -54,12 +54,13 @@
     }
   },
   "author": "55631825@qq.com <55631825@qq.com>",
-  "license": null,
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.16.1",
     "handlebars": "^4.0.8",
     "handlebars-helpers": "^0.8.2",
     "highlight.js": "^9.11.0",
+    "iview": "^2.0.0-rc.17",
     "open": "0.0.5",
     "unlazy-loader": "^0.1.2",
     "vue": "^2.2.2",
@@ -100,7 +101,6 @@
     "file-loader": "^0.10.1",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.16.1",
-    "iview": "^2.0.0-rc.12",
     "json-loader": "^0.5.4",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
