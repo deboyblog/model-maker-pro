@@ -113,6 +113,9 @@
       confirmAdd () {
         if (this.project.name && this.project.type) {
           this.$store.commit(types.ADD_PROJECT, this.project)
+          if (this.$store.getters.projectList.length > 0) {
+            this.$store.commit(types.UPDATE_SELECT_INDEX, this.$store.getters.projectList.length - 1)
+          }
         } else {
           this.showNotice({type: 'warning', desc: '项目名称和类型都是必填项'})
         }
@@ -125,6 +128,9 @@
           // 删除工作空间中储存的项目
           this.$project.syncDeleteProject(project)
           this.showNotice(`删除项目 ${project.name} 成功`)
+          if (this.$store.getters.projectList.length > 0) {
+            this.$store.commit(types.UPDATE_SELECT_INDEX, 0)
+          }
         } else {
           this.showNotice({type: 'warning', desc: '没有项目可以删除 请先新建项目'})
         }
